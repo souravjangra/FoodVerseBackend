@@ -25,7 +25,7 @@ verifyToken = (req, res, next) => {
 };
 
 isAdmin = (req, res, next) => {
-    User.findByPK(req.userId).then(user => {
+    User.findByPk(req.userId).then(user => {
         user.getRoles().then(roles => {
             for(let i=0; i<roles.length; i++) {
                 if(roles[i].name === "admin") {
@@ -42,7 +42,7 @@ isAdmin = (req, res, next) => {
 };
 
 isVendor = (req, res, next) => {
-    User.findByPK(req.userId).then(user => {
+    User.findByPk(req.userId).then(user => {
         user.getRoles().then(roles => {
             for(let i=0;i<roles.length;i++) {
                 if(roles[i].name === "vendor") {

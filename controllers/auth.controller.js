@@ -13,7 +13,8 @@ const { role } = require('../models');
 exports.signup = (req, res) => {
     User.create({
         email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8)
+        password: bcrypt.hashSync(req.body.password, 8),
+        phoneNo: req.body.phoneNo
     }).then(user => {
         if(req.body.roles){
             Role.findAll({
@@ -74,7 +75,8 @@ exports.signin = (req, res) => {
                 id: user.id,
                 email: user.email,
                 roles: authorities,
-                accessToken: token
+                accessToken: token,
+                phoneNo: user.phoneNo
             });
         })
     }).catch(err => {
