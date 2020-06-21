@@ -2,7 +2,7 @@ var bcrypt = require('bcryptjs');
 const passport = require('../config/passport');
 
 module.exports = (sequelize, DataTypes) => {
-    var User = sequelize.define("User", {
+    const User = sequelize.define("users", {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -17,20 +17,20 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    User.beforeCreate(user => {
-        user.password = bcrypt.hashSync(
-          user.password,
-          bcrypt.genSaltSync(10),
-          null
-        );
-    });
+    // User.beforeCreate(user => {
+    //     user.password = bcrypt.hashSync(
+    //       user.password,
+    //       bcrypt.genSaltSync(10),
+    //       null
+    //     );
+    // });
 
-    User.prototype.validPassword = (password, user) => {
-        console.log("password " + password + " and " + user.password)
-        if(!user.password)
-            return false;
-        return bcrypt.compareSync(password, user.password);
-    }
+    // User.prototype.validPassword = (password, user) => {
+    //     console.log("password " + password + " and " + user.password)
+    //     if(!user.password)
+    //         return false;
+    //     return bcrypt.compareSync(password, user.password);
+    // }
     
     // User.prototype.validPassword = (password) => {
     //     return bcrypt.compareSync(password, this.password);
