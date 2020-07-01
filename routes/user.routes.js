@@ -1,6 +1,7 @@
 const {authJwt} = require("../config/middleware");
 
 const controller = require("../controllers/user.controller");
+const message = require("../config/middleware/message");
 
 module.exports = (app) => {
     app.use((req, res, next) => {
@@ -18,4 +19,11 @@ module.exports = (app) => {
     app.get("/api/test/vendor", [authJwt.verifyToken, authJwt.isVendor], controller.vendorBoard);
 
     app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
+
+    app.get("/", controller.allAccess);
+
+    app.get("/login", message, (req, res, next) => {
+        res.render('pages/login');
+    });
+    
 }
