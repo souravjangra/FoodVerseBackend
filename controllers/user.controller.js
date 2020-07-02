@@ -1,5 +1,8 @@
 exports.allAccess = (req, res) => {
-    res.render('pages/home');
+    if(req.user) {
+        res.render('pages/index');
+    }
+    res.redirect('/login');
 }
 
 exports.userBoard = (req, res) => {

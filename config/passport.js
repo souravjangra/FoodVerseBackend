@@ -1,82 +1,62 @@
-var passport = require("passport");
-var LocalStrategy = require("passport-local").Strategy;
-var JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
+var passport = require('passport');
+var user = require('../app/user/models/userModel');
+var LocalStrategy = require('passport-local').Strategy;
+var bCrypt = require('bcryptjs');
 
-var jwtOptions = {};
-jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = 'foodJWTverse';
-
-var db = require("../models");
-
-let strategy = new JwtStrategy(jwtOptions, (jwt_payload, done) => {
-    console.log('payload received '+jwt_payload);
-    db.User.findOne({
-        email
-    }).then((user) => {
-            // no user found with the given email
-            if(!user) {
-                return done(null, false, {
-                    message: "Incorrect email."
-                });
-            }
-            // if there is a user with the given email, but the password given is incorrect
-            else if(!user.validPassword(password, user)) {
-                return done(null, false, {
-                    message: "Incorrect password."
-                })
-            }
-            // else return the user
-            return done(null, user);
-    })
-});
-
-getUser = async (email) => {
-    await db.User.findOne({
-        where: {
-            email: email
-        }
+module.exports = function (passport) {
+    passport.serializeUser(function (user, done) {
+        done(null, user.uuid);
     });
+
+    passport.deserializeUser(async function (user, done) {
+        const userObj = await user.findByPk(uuid);
+        done(null, userObj);
+    });
+
+    passport.use('login', new LocalStrategy(
+        {
+            usernameField: 'username',
+            passwordField: 'password',
+            passReqToCallback: true
+        },
+        async function (req, username, password, done) {
+            const user = await UserController.getUserByUsername(username);
+
+            // Username does'nt exist, log error and redirect back
+            if(!user) {
+                console.log('User not found with username ' + username);
+                return done(null, false, req.flash('message', 'User not found'));
+            }
+
+            if(!status) {
+                console.log('Account is not active for ' + username);
+                return done(null, false, req.flash('message', 'Your account is not active!'));
+            }
+
+            // User exists but password is wrong, log the error
+            isValidPassword(user, password).then((result) => {
+                if(!result) {
+                    console.log('Invalid Password');
+                    return done(null, false, req.flash('message', 'Invalid Password'));
+                }
+                return done(null, user);
+            })
+        }
+    ));
 }
 
-passport.use(
-    // new LocalStrategy(
-//     {
-//         usernameField: "email"
-//     },
-//     (email, password, done) => {
-//         // sigin code
-//         db.User.findOne({
-//             where: {
-//                 email: email
-//             }
-//         }).then(
-//             (dbUser)=>{
-//                 // no user found with the given email
-//                 if(!dbUser) {
-//                     return done(null, false, {
-//                         message: "Incorrect email."
-//                     });
-//                 }
-//                 // if there is a user with the given email, but the password given is incorrect
-//                 else if(!dbUser.validPassword(password, dbUser)) {
-//                     return done(null, false, {
-//                         message: "Incorrect password."
-//                     })
-//                 }
-//                 // else return the user
-//                 return done(null, dbUser);
-//             });
-//     })
-    strategy
-);
+var isValidPassword = async function(user, password) {
+    console.log(createHash(password));
 
-passport.serializeUser((user, cb)=>{
-    cb(null, user);
-});
+    var match = await bCrypt.compare(password, user.password);
+    if(match === true) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-passport.deserializeUser((obj, cb)=>{
-    cb(null, obj);
-});
-
-module.exports = passport;
+// Generate hash using bCrypt
+var createHash = function (password) {
+    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+}

@@ -1,6 +1,8 @@
+const verifySignUp = require("../config/middleware/verifySignupHtml");
 const {authJwt} = require("../config/middleware");
 
 const controller = require("../controllers/user.controller");
+const auth_controller = require("../controllers/auth.controller");
 const message = require("../config/middleware/message");
 
 module.exports = (app) => {
@@ -25,5 +27,13 @@ module.exports = (app) => {
     app.get("/login", message, (req, res, next) => {
         res.render('pages/login');
     });
-    
+
+    app.post("/login", auth_controller.signin_html);
+
+    app.get("/signup", message, (req, res, next) => {
+        res.render('pages/signup');
+    });
+
+    app.post("/signup",[verifySignUp.checkDuplicateUsernameOrEmail,
+        verifySignUp.checkRolesExisted], auth_controller.signup_html);
 }

@@ -1,0 +1,52 @@
+<%- include('../template/head')-%>
+
+<body class="text-center" style="height: auto">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <%- include('../template/nav')-%>
+    <main role="main" class="inner cover">
+        <%- include('../template/messages')-%>
+        <h1 class="cover-heading mt-5" style="text-transform: uppercase;">Signup</h1>
+        <form method="POST" action="/signup">
+            <div style="background-color: #f2f2f2; box-shadow: 0px 0px 5px #888888;" class="p-5 mb-5">
+                <div class="form-group">
+                    <label for="email" style="color: black; font-size: 16px;">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="password" style="color: black; font-size: 16px;">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_pass" style="color: black; font-size: 16px;">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" placeholder="Enter Password Again"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="phone" style="color: black; font-size: 16px;">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Phone No."
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="role" style="color: black; font-size: 16px;">Select Role</label><br>
+                    <select name="role" id="role" class="form-control">
+                        <option value="admin" disabled>Admin</option>
+                        <option value="vendor">Vendor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-dark">Signup</button>
+            </div>
+        </form>
+    </main>
+    <%- include('../template/footer')-%>
+</div>
+</body>
+<script>
+    window.onload = function () {
+        document.getElementById('account').classList.add('active');
+        document.getElementById('form').classList.add('active');
+    };
+</script>
+
+</html>
