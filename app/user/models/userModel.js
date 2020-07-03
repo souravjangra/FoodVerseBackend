@@ -8,7 +8,15 @@ var UserModel = db.define("users", {
     },
     username: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: true
+    },
+    firstname: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    lastname: {
+        type: Sequelize.STRING,
+        allowNull: true
     },
     email: {
         type: Sequelize.STRING,
@@ -22,14 +30,14 @@ var UserModel = db.define("users", {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    updated_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('NOW()')
-    },
     created_at: {
         type: Sequelize.DATE,
         allowNull: true,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    updated_at: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('NOW()')
     },
     role_id: {
         type: Sequelize.INTEGER,
