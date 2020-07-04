@@ -2,6 +2,7 @@ var path = require('path');
 var bCrypt = require('bcryptjs');
 var userModel = require('../models/userModel');
 var roleModel = require('../models/roleModel');
+const capitalize = require('../../../helpers/stringHelper');
 
 roleModel.hasMany(userModel, {foreignKey: 'role_id', targetKey: 'id'});
 userModel.belongsTo(roleModel, {foreignKey: 'role_id', targetKey: 'id'});
@@ -193,7 +194,25 @@ UserController.logout = function (req, res) {
 }
 
 UserController.showProfile = function (req, res) {
-    res.render(path.join(BASE_DIR, 'app/user/views', 'profile'), {pageName: 'Profile'});
+    var username = capitalize(req.user.firstname) + " " + capitalize(req.user.lastname);
+    var firstname = capitalize(req.user.firstname);
+    var lastname = capitalize(req.user.lastname);
+    var email = req.user.email;
+    var role;
+    if(req.user.role_id === 1) {
+        role = "Admin";
+    } else if(req.user.role_id === 2) {
+        role = "Vendor"
+    } else if(req.user.role_id === 3) {
+        role = "User";
+    }
+    var data = {
+        firstname,
+        lastname,
+        email,
+        role
+    };
+    res.render(path.join(BASE_DIR, 'app/user/views', 'profile'), {pageName: 'Profile', username: username, data: data});
 }
 
 module.exports = UserController;
