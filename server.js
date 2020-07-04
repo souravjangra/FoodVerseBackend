@@ -18,9 +18,12 @@ var corsOption = {
 global.app = app;
 global.express = express;
 global.config = config;
+global.BASE_DIR = path.resolve(__dirname);
 
 require('./config/settings');
 require('./config/db');
+
+var authHelper = require('./helpers/authHelper');
 
 require('./config/passport')(passport);
 
@@ -51,6 +54,7 @@ app.use(device.capture());
 
 // setting up view engine
 app.set('views', path.join(__dirname, 'views'));
+app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 // setting up public folder
@@ -64,10 +68,19 @@ app.use(passport.session());
 // require("./routes/user.routes")(app);
 
 function isAuthenticated(req, res, next) {
-    var isAuthenticated =
+    var isAuthenticated = authHelper.authenticate(req, res);
+    if(isAuthenticated) {
+        next();
+    } else {
+        res.status(401).send();
+    }
 }
 
-app.use('/', isAuthenticated, web);
+const message = require('./config/middleware/message');
+
+var web = require('./routes/web.routes');
+
+app.use('/', isAuthenticated, message, web);
 
 http.listen(config.port, config.host, function () {
     var message = config.message.portMsg + config.port;
