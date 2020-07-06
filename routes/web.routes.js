@@ -2,6 +2,7 @@ var router = express.Router();
 
 var UserController = require('../app/user/controllers/userController');
 var DashboardController = require('../app/dashboard/controllers/dashboardController');
+var RestaurantController = require('../app/vendor/restaurant/controllers/restaurantController');
 
 // ensure that auth is required for route
 var ensureAuthenticated = function (req, res, next) {
@@ -26,5 +27,13 @@ router.post('/signup', (req, res) => UserController.postSignup(req, res));
 router.get('/logout', (req, res) => UserController.logout(req, res));
 
 router.get('/profile', ensureAuthenticated, (req, res) => UserController.showProfile(req, res));
+
+router.get('/restaurants', ensureAuthenticated, (req, res) => RestaurantController.showAll(req, res));
+
+router.get('/restaurant/add', ensureAuthenticated, (req, res) => RestaurantController.add(req, res));
+
+router.get('/restaurant/update', ensureAuthenticated, (req, res) => RestaurantController.update(req, res));
+
+router.get('/restaurant/delete', ensureAuthenticated, (req, res) => RestaurantController.delete(req, res));
 
 module.exports = router;
